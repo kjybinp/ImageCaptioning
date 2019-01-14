@@ -29,7 +29,7 @@ def encode(dataset, output, batch_size, vggenc):
 
 
 def main():
-    root_dir = '/home/yawata/Desktop/work/data'
+    root_dir = 'dataset directory'
     train, val = dataset.get_mscoco(root_dir)
     vocab_size = len(train.vocab)
     batch_size = 10
