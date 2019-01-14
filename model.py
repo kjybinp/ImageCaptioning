@@ -31,11 +31,11 @@ class VGGEncoder(chainer.Chain):
 
 
     def forward(self, x):
-        h = self.vgg(x, layers=['fc6'])['fc6']
+        h = self.vgg(x, layers=['fc7'])['fc7']
         return h
 
 class LSTMLanguageModel(chainer.Chain):
-    def __init__(self, vocab_size, hidden_size, dropout_ratio, ignore_label):
+    def __init__(self, vocab_size, hidden_size=512, dropout_ratio=0.5, ignore_label=-1):
         super(LSTMLanguageModel, self).__init__()
         with self.init_scope():
             self.embed_word = L.EmbedID(
@@ -72,7 +72,9 @@ class LSTMLanguageModel(chainer.Chain):
             loss += F.softmax_cross_entropy(
                 y, t, ignore_label=self.embed_word.ignore_label)
             size += 1
-            return loss / max(size, 1)
+        loss = loss / max(size, 1)
+        chainer.reporter.report({'loss': loss}, self)
+        return loss
 
     def reset(self, img_feats):
         self.lstm.reset_state()
